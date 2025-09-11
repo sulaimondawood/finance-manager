@@ -33,9 +33,11 @@ public class AppConfig {
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
     httpSecurity.csrf((csrf) -> csrf.disable())
-        .authorizeHttpRequests((request) -> request.requestMatchers("api/v1/auth/**").permitAll()
-            .anyRequest().authenticated())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .cors(cors -> cors.disable())
+        .authorizeHttpRequests((request) -> request.requestMatchers("/auth/**").permitAll()
+            .requestMatchers("/status").permitAll()
+            .anyRequest().authenticated())
         .exceptionHandling(exception -> exception
             .authenticationEntryPoint(getAuthenticationEntryPoint())
             .accessDeniedHandler(getAccessDeniedHandler()))

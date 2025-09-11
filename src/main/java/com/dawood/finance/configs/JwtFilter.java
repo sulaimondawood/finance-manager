@@ -36,37 +36,36 @@ public class JwtFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
 
-    try {
-      String authHeader = request.getHeader("Authorization");
+    String authHeader = request.getHeader("Authorization");
 
-      if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-        throw new SecurityException("Invalid authorization header");
-      }
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      filterChain.doFilter(request, response);
+      return;
+    }
+
+    try {
 
       String token = authHeader.substring(7);
 
-      if (jwtUtils.parseToken(token) == null) {
-        throw new JwtException("Invalid authorization token");
+      if (jwtUtils.validatetoken(token)) {
+
+        String email = jwtUtils.getUsername(token);
+
+        UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(email);
+
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null,
+            Collections.emptyList());
+
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+        SecurityContextHolder.getContext().setAuthentication(authToken);
       }
-
-      String email = jwtUtils.getUsername(token);
-
-      UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(email);
-
-      UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null,
-          Collections.emptyList());
-
-      authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-      SecurityContextHolder.getContext().setAuthentication(authToken);
 
       filterChain.doFilter(request, response);
 
     } catch (UsernameNotFoundException e) {
       writeErrorResponse(response, "Username not found", HttpServletResponse.SC_NOT_FOUND);
       System.out.println("Username not found " + e.getMessage());
-    } catch (SecurityException e) {
-      writeErrorResponse(response, e.getMessage(), HttpServletResponse.SC_BAD_REQUEST);
     } catch (JwtException e) {
       System.out.println("Invalid jwt token " + e.getMessage());
       writeErrorResponse(response, "Invalid authorization token", HttpServletResponse.SC_UNAUTHORIZED);

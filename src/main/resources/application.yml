@@ -3,6 +3,9 @@ server:
     context-path: /api/v1
 
 spring:
+  config:
+    import: file:.env[.properties]
+
   datasource:
     url: jdbc:mysql://localhost:3306/financeManager
     username: root
@@ -12,5 +15,5 @@ spring:
     hibernate:
       ddl-auto: update
 
-  config:
-    import: optional:file:./env.local
+jwt:
+  secret-key: ${JWT_SECRET}

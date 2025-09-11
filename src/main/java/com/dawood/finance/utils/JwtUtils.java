@@ -18,7 +18,7 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtils {
 
-  @Value("${JWT_SECRET}")
+  @Value("${jwt.secret-key}")
   private String jwtSecret;
 
   public String generateToken(UserDetails userDetails) {
@@ -42,6 +42,20 @@ public class JwtUtils {
     } catch (JwtException e) {
       System.out.println(e.getMessage());
       throw new JwtException("Invalid jwt" + e.getMessage());
+    }
+  }
+
+  public boolean validatetoken(String jwt) {
+    try {
+
+      Jwts.parser()
+          .verifyWith(getSecretKey())
+          .build()
+          .parseSignedClaims(jwt);
+
+      return true;
+    } catch (Exception e) {
+      return false;
     }
   }
 
