@@ -59,7 +59,7 @@ public class AppConfig {
 
   private AuthenticationEntryPoint getAuthenticationEntryPoint() {
     return (request, response, authException) -> {
-      writeErrorResponse(response, "Authentication failed", HttpStatus.UNAUTHORIZED.value());
+      writeErrorResponse(response, "Invalid authorization token", HttpStatus.UNAUTHORIZED.value());
     };
   }
 

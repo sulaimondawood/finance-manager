@@ -65,12 +65,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
     } catch (UsernameNotFoundException e) {
       writeErrorResponse(response, "Username not found", HttpServletResponse.SC_NOT_FOUND);
-      System.out.println("Username not found " + e.getMessage());
+      logger.error("Username not found " + e.getMessage());
     } catch (JwtException e) {
-      System.out.println("Invalid jwt token " + e.getMessage());
+      logger.error("Invalid jwt token " + e.getMessage());
       writeErrorResponse(response, "Invalid authorization token", HttpServletResponse.SC_UNAUTHORIZED);
     } catch (Exception e) {
-      System.out.println("Something went wrong " + e.getMessage());
+      logger.error("Something went wrong " + e.getMessage());
       writeErrorResponse(response, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 

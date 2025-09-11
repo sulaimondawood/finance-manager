@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,11 +37,18 @@ public class User {
 
   private String photoUrl;
 
+  private Boolean isActive;
+
   @UpdateTimestamp
   private LocalDateTime updatedAt;
 
   @CreationTimestamp
   @Column(updatable = false)
   private LocalDateTime createdAt;
+
+  @PrePersist
+  private void prePersit() {
+    this.isActive = false;
+  }
 
 }
