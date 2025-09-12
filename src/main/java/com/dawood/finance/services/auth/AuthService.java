@@ -2,6 +2,7 @@ package com.dawood.finance.services.auth;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,9 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final EmailService emailService;
 
+  @Value("${app.base-url}")
+  private String baseUrl;
+
   public RegisterResponseDTO register(RegisterRequestDTO request) {
 
     if (userRepository.existsByEmail(request.getEmail())) {
@@ -44,7 +48,7 @@ public class AuthService {
 
     User savedUser = userRepository.save(newUser);
 
-    String activationLink = "http://localhost:8080/api/v1/activate?token=" + activationToken;
+    String activationLink = baseUrl + "activate?token=" + activationToken;
 
     String body = "Hello " + newUser.getFullname() + "\n" + "Kindly click the link to activate your account "
         + activationLink;
@@ -75,12 +79,7 @@ public class AuthService {
   public boolean isAccountActive(String email) {
     User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User does not exists"));
 
-    if (user.getIsActive()) {
-      return true;
-    }
-
-    return false;
+    return user.getIsActive();
 
   }
-
 }
