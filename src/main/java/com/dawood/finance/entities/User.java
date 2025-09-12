@@ -39,6 +39,8 @@ public class User {
 
   private Boolean isActive;
 
+  private String activationToken;
+
   @UpdateTimestamp
   private LocalDateTime updatedAt;
 
@@ -48,7 +50,9 @@ public class User {
 
   @PrePersist
   private void prePersit() {
-    this.isActive = false;
+    if (isActive == null) {
+      this.isActive = false;
+    }
   }
 
 }
