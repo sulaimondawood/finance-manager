@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.dawood.finance.dtos.auth.ErrorResponse;
+import com.dawood.finance.dtos.ErrorResponse;
 import com.dawood.finance.services.UserDetailsServiceImpl;
 import com.dawood.finance.utils.JwtUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;

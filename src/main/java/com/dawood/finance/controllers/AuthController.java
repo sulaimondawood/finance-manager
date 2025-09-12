@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dawood.finance.dtos.ApiResponse;
 import com.dawood.finance.dtos.auth.RegisterRequestDTO;
 import com.dawood.finance.dtos.auth.RegisterResponseDTO;
 import com.dawood.finance.services.auth.AuthService;
@@ -22,10 +23,11 @@ public class AuthController {
   private final AuthService authService;
 
   @PostMapping("register")
-  public ResponseEntity<RegisterResponseDTO> register(@Valid @RequestBody RegisterRequestDTO requestDTO) {
-    RegisterResponseDTO response = authService.register(requestDTO);
+  public ResponseEntity<ApiResponse<RegisterResponseDTO>> register(@Valid @RequestBody RegisterRequestDTO requestDTO) {
+    RegisterResponseDTO registerResponseDTO = authService.register(requestDTO);
 
-    return new ResponseEntity<>(response, HttpStatus.CREATED);
+    return new ResponseEntity<>(ApiResponse.success("Activation link sent to your email", registerResponseDTO),
+        HttpStatus.CREATED);
   }
 
 }

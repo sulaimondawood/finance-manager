@@ -19,14 +19,19 @@ public class EmailService {
 
   public void sendSimpleMail(String to, String body, String subject) {
 
-    SimpleMailMessage mailMessage = new SimpleMailMessage();
+    try {
 
-    mailMessage.setFrom(from);
-    mailMessage.setSubject(subject);
-    mailMessage.setTo(to);
-    mailMessage.setText(body);
+      SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-    javaMailSender.send(mailMessage);
+      mailMessage.setFrom("finance-manager@gmail.com");
+      mailMessage.setSubject(subject);
+      mailMessage.setTo(to);
+      mailMessage.setText(body);
+
+      javaMailSender.send(mailMessage);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
 
   }
 
