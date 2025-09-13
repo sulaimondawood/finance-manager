@@ -2,11 +2,8 @@ package com.dawood.finance.services.auth;
 
 import java.util.UUID;
 
-import javax.naming.AuthenticationException;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +16,6 @@ import com.dawood.finance.entities.User;
 import com.dawood.finance.exceptions.AccountAlreadyValidatedException;
 import com.dawood.finance.exceptions.EmailAlreadyExists;
 import com.dawood.finance.exceptions.InvalidActivationToken;
-import com.dawood.finance.exceptions.InvalidCredentials;
 import com.dawood.finance.exceptions.user.UserNotFoundException;
 import com.dawood.finance.mappers.UserMapper;
 import com.dawood.finance.repositories.UserRepository;
@@ -37,7 +33,7 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final EmailService emailService;
   private final JwtUtils jwtUtils;
-  private UserDetailsServiceImpl userDetailsServiceImpl;
+  private final UserDetailsServiceImpl userDetailsServiceImpl;
 
   String activationToken = UUID.randomUUID().toString();
 
@@ -71,7 +67,7 @@ public class AuthService {
 
     if (!isAccountActive(user.getEmail())) {
       sendMail(user);
-      return LoginResponse.builder().build();
+      return LoginResponse.builder().message("Activation link sent to your email").build();
     }
 
     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -82,7 +78,7 @@ public class AuthService {
 
     String token = jwtUtils.generateToken(userDetails);
 
-    return LoginResponse.builder().token(token).build();
+    return LoginResponse.builder().token(token).message("Login successfull").build();
 
   }
 
@@ -111,10 +107,11 @@ public class AuthService {
   }
 
   public void sendMail(User user) {
-    String activationLink = baseUrl + "activate?token=" + activationToken;
+    String activationLink = baseUrl + "auth/activate?token=" + activationToken;
 
-    String body = "Hello " + user.getFullname() + "\n" + "Kindly click the link to activate your account "
-        + activationLink;
+    String body = "<p>Hello " + user.getFullname() + ",</p>" +
+        "<p>Kindly click the link below to activate your account:</p>" +
+        "<p><a href=\"" + activationLink + "\">Activate Account</a></p>";
 
     emailService.sendSimpleMail(user.getEmail(), body,
         "Finance Manager account activation");
