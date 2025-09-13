@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -115,6 +116,10 @@ public class AuthService {
 
     emailService.sendSimpleMail(user.getEmail(), body,
         "Finance Manager account activation");
+  }
+
+  public String getCurrentUserUsername() {
+    return SecurityContextHolder.getContext().getAuthentication().getName();
   }
 
 }
