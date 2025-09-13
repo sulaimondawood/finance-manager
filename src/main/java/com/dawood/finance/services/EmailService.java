@@ -23,7 +23,7 @@ public class EmailService {
 
       SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-      mailMessage.setFrom("finance-manager@gmail.com");
+      mailMessage.setFrom(from);
       mailMessage.setSubject(subject);
       mailMessage.setTo(to);
       mailMessage.setText(body);

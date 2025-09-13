@@ -2,12 +2,16 @@ package com.dawood.finance.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dawood.finance.dtos.ApiResponse;
+import com.dawood.finance.dtos.auth.LoginRequest;
+import com.dawood.finance.dtos.auth.LoginResponse;
 import com.dawood.finance.dtos.auth.RegisterRequestDTO;
 import com.dawood.finance.dtos.auth.RegisterResponseDTO;
 import com.dawood.finance.services.auth.AuthService;
@@ -28,6 +32,19 @@ public class AuthController {
 
     return new ResponseEntity<>(ApiResponse.success("Activation link sent to your email", registerResponseDTO),
         HttpStatus.CREATED);
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
+
+    return ResponseEntity.ok()
+        .body(ApiResponse.success("Activation link sent to your email", authService.login(request)));
+  }
+
+  @GetMapping("/activate")
+  public ResponseEntity<ApiResponse<String>> activateAccount(@RequestParam(name = "token") String token) {
+    return new ResponseEntity<>(
+        ApiResponse.success("Account activated successfully", authService.activateAccount(token)), HttpStatus.OK);
   }
 
 }
