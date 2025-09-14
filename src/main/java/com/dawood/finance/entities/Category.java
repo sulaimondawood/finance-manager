@@ -35,7 +35,7 @@ public class Category {
 
   private String icon;
 
-  private String descriprion;
+  private String description;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")

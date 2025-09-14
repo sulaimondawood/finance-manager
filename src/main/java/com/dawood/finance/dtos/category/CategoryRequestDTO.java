@@ -17,6 +17,6 @@ public class CategoryRequestDTO {
 
   private String icon;
 
-  private String descriprion;
+  private String description;
 
 }

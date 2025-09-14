@@ -122,4 +122,9 @@ public class AuthService {
     return SecurityContextHolder.getContext().getAuthentication().getName();
   }
 
+  public User getCurrentUser() {
+    return userRepository.findByEmail(getCurrentUserUsername())
+        .orElseThrow(() -> new UserNotFoundException());
+  }
+
 }

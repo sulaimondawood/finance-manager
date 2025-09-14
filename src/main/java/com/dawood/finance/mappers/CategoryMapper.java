@@ -9,7 +9,7 @@ public class CategoryMapper {
     return CategoryResponseDTO.builder()
         .id(category.getId())
         .name(category.getName())
-        .descriprion(category.getDescriprion())
+        .descriprion(category.getDescription())
         .icon(category.getIcon())
         .build();
   }
@@ -18,7 +18,7 @@ public class CategoryMapper {
     return Category.builder()
         .id(cDto.getId())
         .name(cDto.getName())
-        .descriprion(cDto.getDescriprion())
+        .description(cDto.getDescriprion())
         .icon(cDto.getIcon())
         .build();
   }

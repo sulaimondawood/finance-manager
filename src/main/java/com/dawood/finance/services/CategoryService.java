@@ -7,25 +7,28 @@ import com.dawood.finance.dtos.category.CategoryResponseDTO;
 import com.dawood.finance.entities.Category;
 import com.dawood.finance.mappers.CategoryMapper;
 import com.dawood.finance.repositories.CategoryRepository;
+import com.dawood.finance.services.auth.AuthService;
 
 @Service
 public class CategoryService {
 
   private final CategoryRepository categoryRepository;
+  private final AuthService authService;
 
-  public CategoryService(CategoryRepository categoryRepository) {
+  public CategoryService(CategoryRepository categoryRepository, AuthService authService) {
     this.categoryRepository = categoryRepository;
+    this.authService = authService;
   }
 
   public CategoryResponseDTO create(CategoryRequestDTO requestDTO) {
 
-    if (categoryRepository.existsByName(requestDTO.getName())) {
+    if (categoryRepository.existsByNameAndUser(requestDTO.getName(), authService.getCurrentUser())) {
       throw new IllegalArgumentException("Category with name " + requestDTO.getName() + " already exists");
     }
 
     Category category = Category.builder()
         .name(requestDTO.getName())
-        .descriprion(requestDTO.getDescriprion())
+        .description(requestDTO.getDescription())
         .icon(requestDTO.getIcon())
         .build();
 
