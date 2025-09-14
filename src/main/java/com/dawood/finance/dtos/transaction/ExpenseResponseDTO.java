@@ -2,26 +2,31 @@ package com.dawood.finance.dtos.transaction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data
-public class ExpenseRequestDTO {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ExpenseResponseDTO {
 
-  @NotEmpty(message = "Expense name is required")
+  private Long id;
+
   private String name;
 
-  @NotEmpty(message = "Expense amount is required")
   private BigDecimal amount;
-
-  @NotEmpty(message = "Expense category is required")
-  private Long categoryId;
 
   private LocalDate date;
 
   private String icon;
+
+  private LocalDateTime updatedAt;
+
+  private LocalDateTime createdAt;
 
 }

@@ -10,10 +10,10 @@ import lombok.Data;
 @Builder
 @Data
 public class IncomeRequestDTO {
-  @NotEmpty(message = "Expense name is required")
+  @NotEmpty(message = "Income name is required")
   private String name;
 
-  @NotEmpty(message = "Expense amount is required")
+  @NotEmpty(message = "Income amount is required")
   private BigDecimal amount;
 
   private LocalDate date;
