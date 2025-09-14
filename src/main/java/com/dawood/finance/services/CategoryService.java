@@ -52,7 +52,8 @@ public class CategoryService {
 
   public CategoryResponseDTO update(CategoryRequestDTO requestDTO, Long id) {
 
-    Category category = CategoryMapper.toModel(getCategory(id));
+    Category category = categoryRepository.findByIdAndUser(id, authService.getCurrentUser())
+        .orElseThrow(() -> new CategoryNotFoundException());
 
     category.setName(requestDTO.getName());
     category.setType(requestDTO.getType());
@@ -86,7 +87,7 @@ public class CategoryService {
     List<CategoryResponseDTO> categoryResponseDTOs = pagedCategory.getContent().stream()
         .map(CategoryMapper::toDTO).toList();
 
-    return ApiResponse.success("Categories fetched successfully", categoryResponseDTOs);
+    return ApiResponse.success("Categories fetched successfully", categoryResponseDTOs, meta);
 
   }
 }

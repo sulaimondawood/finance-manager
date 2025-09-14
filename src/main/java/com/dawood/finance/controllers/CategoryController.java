@@ -40,7 +40,7 @@ public class CategoryController {
 
   @PatchMapping("/{categoryId}/update")
   public ResponseEntity<ApiResponse<CategoryResponseDTO>> update(
-      @RequestBody CategoryRequestDTO requestDTO, @PathVariable(name = "categoryId") Long categoryId) {
+      @RequestBody CategoryRequestDTO requestDTO, @PathVariable Long categoryId) {
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success("Category updated", categoryService.update(requestDTO, categoryId)));
