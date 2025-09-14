@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +54,14 @@ public class CategoryController {
         .body(ApiResponse.success("Category fetched successfully", categoryService.getCategory(categoryId)));
   }
 
+  @DeleteMapping("/{categoryId}")
+  public ResponseEntity<ApiResponse<CategoryResponseDTO>> deleteCategory(@PathVariable Long categoryId) {
+
+    categoryService.delete(categoryId);
+    return ResponseEntity.ok()
+        .body(ApiResponse.success("Category deleted successfully"));
+  }
+
   @GetMapping
   public ResponseEntity<ApiResponse<List<CategoryResponseDTO>>> getAllCategories(
       @RequestParam(defaultValue = "0", required = false) int pageNo,
@@ -60,6 +69,11 @@ public class CategoryController {
 
   ) {
     return ResponseEntity.ok().body(categoryService.getAllCategories(pageNo, pageSize));
+  }
+
+  @GetMapping("/top-5")
+  public ResponseEntity<ApiResponse<List<CategoryResponseDTO>>> getTop5Categories() {
+    return ResponseEntity.ok().body(categoryService.getTop5Categories());
   }
 
 }

@@ -50,6 +50,15 @@ public class CategoryService {
 
   }
 
+  public void delete(Long id) {
+
+    Category category = categoryRepository.findByIdAndUser(id, authService.getCurrentUser())
+        .orElseThrow(() -> new CategoryNotFoundException());
+
+    categoryRepository.delete(category);
+
+  }
+
   public CategoryResponseDTO update(CategoryRequestDTO requestDTO, Long id) {
 
     Category category = categoryRepository.findByIdAndUser(id, authService.getCurrentUser())
@@ -89,5 +98,13 @@ public class CategoryService {
 
     return ApiResponse.success("Categories fetched successfully", categoryResponseDTOs, meta);
 
+  }
+
+  public ApiResponse<List<CategoryResponseDTO>> getTop5Categories() {
+
+    List<CategoryResponseDTO> response = categoryRepository
+        .findTop5ByUserOrderByCreatedAtDesc(authService.getCurrentUser()).stream().map(CategoryMapper::toDTO).toList();
+
+    return ApiResponse.success("Categories fetched successfully", response);
   }
 }

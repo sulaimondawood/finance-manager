@@ -1,5 +1,6 @@
 package com.dawood.finance.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -16,5 +17,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
   Optional<Category> findByIdAndUser(Long id, User user);
 
   Page<Category> findAllByUser(User user, Pageable page);
+
+  // select * from category where user = user limit =5
+  List<Category> findTop5ByUserOrderByCreatedAtDesc(User user);
 
 }
