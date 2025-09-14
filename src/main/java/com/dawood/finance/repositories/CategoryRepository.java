@@ -1,5 +1,9 @@
 package com.dawood.finance.repositories;
 
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.dawood.finance.entities.Category;
@@ -7,8 +11,10 @@ import com.dawood.finance.entities.User;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-  Boolean existsByNameAndUser(String name, User user);
+  boolean existsByNameAndUser(String name, User user);
 
-  Category findByName(String name);
+  Optional<Category> findByIdAndUser(Long id, User user);
+
+  Page<Category> findAllByUser(User user, Pageable page);
 
 }

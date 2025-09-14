@@ -3,6 +3,7 @@ package com.dawood.finance.exceptions;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,9 +12,46 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.dawood.finance.dtos.ErrorResponse;
+import com.dawood.finance.exceptions.category.CategoryNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+  @ExceptionHandler(CategoryNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleCategoryNotFoundExceptionHandler(CategoryNotFoundException ex) {
+
+    ErrorResponse response = ErrorResponse.builder()
+
+        .message(ex.getMessage())
+        .status(HttpStatus.BAD_REQUEST.value())
+        .build();
+
+    return ResponseEntity.badRequest().body(response);
+  }
+
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  public ResponseEntity<ErrorResponse> dataIntegrityExceptionHandler(DataIntegrityViolationException ex) {
+
+    ErrorResponse response = ErrorResponse.builder()
+
+        .message("A data validation error occured, please verify your input and try again")
+        .status(HttpStatus.BAD_REQUEST.value())
+        .build();
+
+    return ResponseEntity.badRequest().body(response);
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<ErrorResponse> illegallArugmentExceptionHandler(IllegalArgumentException ex) {
+
+    ErrorResponse response = ErrorResponse.builder()
+
+        .message(ex.getMessage())
+        .status(HttpStatus.BAD_REQUEST.value())
+        .build();
+
+    return ResponseEntity.badRequest().body(response);
+  }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<Map<String, String>> methodArgumentNotValidsxceptionHandler(

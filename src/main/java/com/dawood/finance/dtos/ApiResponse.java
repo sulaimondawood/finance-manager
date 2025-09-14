@@ -1,5 +1,8 @@
 package com.dawood.finance.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import lombok.Data;
 
 @Data
@@ -10,6 +13,9 @@ public class ApiResponse<T> {
   private String message;
 
   private T data;
+
+  @JsonInclude(Include.NON_NULL)
+  private ApiMeta meta;
 
   public ApiResponse(String message, T data, boolean success) {
     this.data = data;

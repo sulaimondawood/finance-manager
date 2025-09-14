@@ -15,6 +15,8 @@ public class CategoryResponseDTO {
 
   private String name;
 
+  private String type;
+
   private String icon;
 
   private String description;
