@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.dawood.finance.dtos.ErrorResponse;
 import com.dawood.finance.exceptions.category.CategoryNotFoundException;
 import com.dawood.finance.exceptions.expense.ExpenseNotFoundException;
+import com.dawood.finance.exceptions.income.IncomeNotFoundException;
+import com.dawood.finance.exceptions.user.UserNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -22,6 +24,31 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedExceptionHandler(
       HttpRequestMethodNotSupportedException ex) {
+
+    ErrorResponse response = ErrorResponse.builder()
+
+        .message(ex.getMessage())
+        .status(HttpStatus.BAD_REQUEST.value())
+        .build();
+
+    return ResponseEntity.badRequest().body(response);
+  }
+
+  @ExceptionHandler(UserNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleUserNotFoundExceptionHandler(
+      UserNotFoundException ex) {
+
+    ErrorResponse response = ErrorResponse.builder()
+
+        .message(ex.getMessage())
+        .status(HttpStatus.BAD_REQUEST.value())
+        .build();
+
+    return ResponseEntity.badRequest().body(response);
+  }
+
+  @ExceptionHandler(IncomeNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleIncomeNotFoundExceptionHandler(IncomeNotFoundException ex) {
 
     ErrorResponse response = ErrorResponse.builder()
 
