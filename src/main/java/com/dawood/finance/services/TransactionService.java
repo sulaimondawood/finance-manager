@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.dawood.finance.dtos.ApiMeta;
 import com.dawood.finance.dtos.ApiResponse;
 import com.dawood.finance.dtos.transaction.ExpenseRequestDTO;
+import com.dawood.finance.dtos.transaction.ExpenseRequestDateRangeDTO;
 import com.dawood.finance.dtos.transaction.ExpenseResponseDTO;
 import com.dawood.finance.entities.Category;
 import com.dawood.finance.entities.Expense;
@@ -78,16 +79,13 @@ public class TransactionService {
     Expense expense = expenseRepository.findByUserAndId(authService.getCurrentUser(), id)
         .orElseThrow(() -> new ExpenseNotFoundException());
 
-    Category category = categoryRepository.findByIdAndUser(requestDTO.getCategoryId(), authService.getCurrentUser())
-        .orElseThrow(() -> new CategoryNotFoundException());
-
     expense.setAmount(requestDTO.getAmount());
-    expense.setCategory(category);
     expense.setDate(requestDTO.getDate());
     expense.setIcon(requestDTO.getIcon());
     expense.setName(requestDTO.getName());
 
-    return ApiResponse.success("Expense updated", TransactionMapper.toExpenseDTO(expense));
+    Expense savedExpense = expenseRepository.save(expense);
+    return ApiResponse.success("Expense updated", TransactionMapper.toExpenseDTO(savedExpense));
   }
 
   public ApiResponse<List<ExpenseResponseDTO>> getUserExpenses(int pageNo, int pageSize) {
@@ -163,17 +161,22 @@ public class TransactionService {
 
   }
 
-  public ApiResponse<List<ExpenseResponseDTO>> getUserExpensesWithDateRangeAndKeyword(int pageNo, int pageSize) {
-    LocalDate now = LocalDate.now();
-
-    LocalDate startDate = now.withDayOfMonth(1);
-
-    LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
+  public ApiResponse<List<ExpenseResponseDTO>> getUserExpensesWithDateRangeAndKeyword(int pageNo, int pageSize,
+      ExpenseRequestDateRangeDTO request) {
 
     Pageable pageable = PageRequest.of(pageNo, pageSize);
 
-    Page<Expense> pagedExpense = expenseRepository.findByUserAndDateBetween(authService.getCurrentUser(), startDate,
+    LocalDate startDate = request.getStartDate();
+    LocalDate endDate = request.getEndate();
+
+    if (request.getEndate() == null) {
+      endDate = LocalDate.now().withMonth(12).withDayOfMonth(31);
+    }
+
+    Page<Expense> pagedExpense = expenseRepository.findByUserAndDateBetweenAndNameContainingIgnoreCase(
+        authService.getCurrentUser(), startDate,
         endDate,
+        request.getKeyword(),
         pageable);
 
     ApiMeta meta = new ApiMeta();
