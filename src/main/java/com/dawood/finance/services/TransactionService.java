@@ -1,5 +1,6 @@
 package com.dawood.finance.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import com.dawood.finance.entities.Category;
 import com.dawood.finance.entities.Expense;
 import com.dawood.finance.entities.User;
 import com.dawood.finance.exceptions.category.CategoryNotFoundException;
+import com.dawood.finance.exceptions.expense.ExpenseNotFoundException;
 import com.dawood.finance.mappers.TransactionMapper;
 import com.dawood.finance.repositories.CategoryRepository;
 import com.dawood.finance.repositories.ExpenseRepository;
@@ -56,6 +58,37 @@ public class TransactionService {
 
   }
 
+  public void deleteExpense(Long expenseId) {
+
+    User user = authService.getCurrentUser();
+
+    Expense expense = expenseRepository.findById(expenseId)
+        .orElseThrow(() -> new ExpenseNotFoundException());
+
+    if(!user.equals(expense.getUser())){
+      throw IllegalArgumentException("Action is not authorized")
+    }
+
+    expenseRepository.delete(expense);
+
+  }
+
+  public ApiResponse<ExpenseResponseDTO> updateExpense(ExpenseRequestDTO requestDTO, Long id) {
+    Expense expense = expenseRepository.findByUserAndId(authService.getCurrentUser(), id)
+        .orElseThrow(() -> new ExpenseNotFoundException());
+
+    Category category = categoryRepository.findByIdAndUser(requestDTO.getCategoryId(), authService.getCurrentUser())
+        .orElseThrow(() -> new CategoryNotFoundException());
+
+    expense.setAmount(requestDTO.getAmount());
+    expense.setCategory(category);
+    expense.setDate(requestDTO.getDate());
+    expense.setIcon(requestDTO.getIcon());
+    expense.setName(requestDTO.getName());
+
+    return ApiResponse.success("Expense updated", TransactionMapper.toExpenseDTO(expense));
+  }
+
   public ApiResponse<List<ExpenseResponseDTO>> getUserExpenses(int pageNo, int pageSize) {
 
     Pageable pageable = PageRequest.of(pageNo, pageSize);
@@ -77,6 +110,37 @@ public class TransactionService {
 
     return ApiResponse.success("Expense fetched successfully", response, meta);
 
+  }
+
+  public ApiResponse<List<ExpenseResponseDTO>> getUserTop5Expenses() {
+
+    List<Expense> expenses = expenseRepository.findTop5ByUserOrderByCreatedAtDesc(authService.getCurrentUser());
+
+    List<ExpenseResponseDTO> response = expenses
+        .stream()
+        .map(TransactionMapper::toExpenseDTO)
+        .toList();
+
+    return ApiResponse.success("Expense fetched successfully", response);
+
+  }
+
+  public ApiResponse<ExpenseResponseDTO> getUserExpenseById(Long id) {
+    Expense expense = expenseRepository.findByUserAndId(authService.getCurrentUser(), id)
+        .orElseThrow(() -> new ExpenseNotFoundException());
+
+    return ApiResponse.success("Expense retreived", TransactionMapper.toExpenseDTO(expense));
+  }
+
+  public ApiResponse<BigDecimal> getSumOfUserExpenses() {
+
+    User user = authService.getCurrentUser();
+
+    BigDecimal sumOfExpenses = expenseRepository.findSumOfExpensesByUserId(user.getId());
+
+    BigDecimal response = sumOfExpenses != null ? sumOfExpenses : BigDecimal.ZERO;
+
+    return ApiResponse.success("", response);
   }
 
 }

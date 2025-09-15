@@ -3,6 +3,7 @@ package com.dawood.finance.repositories;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +20,10 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
   List<Expense> findTop5ByUserOrderByCreatedAtDesc(User user);
 
+  Optional<Expense> findByUserAndId(User user, Long id);
+
   @Query("SELECT SUM(e.amount) FROM Expense e WHERE e.user.id=:userId")
-  BigDecimal findSumOfExpensesByUserId(@Param("userId") String userId);
+  BigDecimal findSumOfExpensesByUserId(@Param("userId") Long userId);
 
   Page<Expense> findByUserAndDateBetweenAndNameContainingIgnoreCase(User user, LocalDate startDate, LocalDate endDate,
       String keyword, Pageable pageable);

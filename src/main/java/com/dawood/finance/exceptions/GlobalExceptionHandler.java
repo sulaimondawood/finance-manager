@@ -13,9 +13,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.dawood.finance.dtos.ErrorResponse;
 import com.dawood.finance.exceptions.category.CategoryNotFoundException;
+import com.dawood.finance.exceptions.expense.ExpenseNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+  @ExceptionHandler(ExpenseNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleExpenseNotFoundExceptionHandler(ExpenseNotFoundException ex) {
+
+    ErrorResponse response = ErrorResponse.builder()
+
+        .message(ex.getMessage())
+        .status(HttpStatus.BAD_REQUEST.value())
+        .build();
+
+    return ResponseEntity.badRequest().body(response);
+  }
 
   @ExceptionHandler(CategoryNotFoundException.class)
   public ResponseEntity<ErrorResponse> handleCategoryNotFoundExceptionHandler(CategoryNotFoundException ex) {
