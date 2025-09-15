@@ -35,7 +35,7 @@ public class AppConfig {
     httpSecurity.csrf((csrf) -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .cors(cors -> cors.disable())
-        .authorizeHttpRequests((request) -> request.requestMatchers("/auth/**", "/status", "/activate").permitAll()
+        .authorizeHttpRequests((request) -> request.requestMatchers("/auth/**", "/status").permitAll()
 
             .anyRequest().authenticated())
         .exceptionHandling(exception -> exception

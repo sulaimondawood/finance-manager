@@ -1,11 +1,11 @@
 package com.dawood.finance.services;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -21,14 +21,16 @@ public class EmailService {
 
     try {
 
-      SimpleMailMessage mailMessage = new SimpleMailMessage();
+      MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
-      mailMessage.setFrom("finance-manager@gmail.com");
-      mailMessage.setSubject(subject);
-      mailMessage.setTo(to);
-      mailMessage.setText(body);
+      MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
 
-      javaMailSender.send(mailMessage);
+      helper.setFrom(from);
+      helper.setSubject(subject);
+      helper.setTo(to);
+      helper.setText(body, true);
+
+      javaMailSender.send(mimeMessage);
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
