@@ -7,7 +7,7 @@ import com.dawood.finance.entities.Income;
 
 public class TransactionMapper {
 
-  public ExpenseResponseDTO toExpenseDTO(Expense expense) {
+  public static ExpenseResponseDTO toExpenseDTO(Expense expense) {
     return ExpenseResponseDTO.builder()
         .id(expense.getId())
         .name(expense.getName())
@@ -19,7 +19,7 @@ public class TransactionMapper {
         .build();
   }
 
-  public IncomeResponseDTO toIncomeDTO(Income income) {
+  public static IncomeResponseDTO toIncomeDTO(Income income) {
     return IncomeResponseDTO.builder()
         .id(income.getId())
         .name(income.getName())
