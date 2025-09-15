@@ -1,6 +1,7 @@
 package com.dawood.finance.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -65,8 +66,8 @@ public class TransactionService {
     Expense expense = expenseRepository.findById(expenseId)
         .orElseThrow(() -> new ExpenseNotFoundException());
 
-    if(!user.equals(expense.getUser())){
-      throw IllegalArgumentException("Action is not authorized")
+    if (!user.equals(expense.getUser())) {
+      throw new IllegalArgumentException("Action is not authorized");
     }
 
     expenseRepository.delete(expense);
@@ -130,6 +131,64 @@ public class TransactionService {
         .orElseThrow(() -> new ExpenseNotFoundException());
 
     return ApiResponse.success("Expense retreived", TransactionMapper.toExpenseDTO(expense));
+  }
+
+  public ApiResponse<List<ExpenseResponseDTO>> getUserCurrentMonthExpenses(int pageNo, int pageSize) {
+
+    LocalDate now = LocalDate.now();
+
+    LocalDate startDate = now.withDayOfMonth(1);
+
+    LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
+
+    Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+    Page<Expense> pagedExpense = expenseRepository.findByUserAndDateBetween(authService.getCurrentUser(), startDate,
+        endDate,
+        pageable);
+
+    ApiMeta meta = new ApiMeta();
+    meta.setHasNext(pagedExpense.hasNext());
+    meta.setHasPrev(pagedExpense.hasPrevious());
+    meta.setPageNo(pagedExpense.getNumber());
+    meta.setPageSize(pagedExpense.getSize());
+    meta.setTotalPages(pagedExpense.getTotalPages());
+
+    List<ExpenseResponseDTO> response = pagedExpense.getContent()
+        .stream()
+        .map(TransactionMapper::toExpenseDTO)
+        .toList();
+
+    return ApiResponse.success("Current month expense fetched successfully", response, meta);
+
+  }
+
+  public ApiResponse<List<ExpenseResponseDTO>> getUserExpensesWithDateRangeAndKeyword(int pageNo, int pageSize) {
+    LocalDate now = LocalDate.now();
+
+    LocalDate startDate = now.withDayOfMonth(1);
+
+    LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
+
+    Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+    Page<Expense> pagedExpense = expenseRepository.findByUserAndDateBetween(authService.getCurrentUser(), startDate,
+        endDate,
+        pageable);
+
+    ApiMeta meta = new ApiMeta();
+    meta.setHasNext(pagedExpense.hasNext());
+    meta.setHasPrev(pagedExpense.hasPrevious());
+    meta.setPageNo(pagedExpense.getNumber());
+    meta.setPageSize(pagedExpense.getSize());
+    meta.setTotalPages(pagedExpense.getTotalPages());
+
+    List<ExpenseResponseDTO> response = pagedExpense.getContent()
+        .stream()
+        .map(TransactionMapper::toExpenseDTO)
+        .toList();
+
+    return ApiResponse.success("Expense fetched successfully", response, meta);
   }
 
   public ApiResponse<BigDecimal> getSumOfUserExpenses() {
