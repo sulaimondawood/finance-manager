@@ -18,6 +18,8 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
   Page<Expense> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
 
+  List<Expense> findByUser(User user);
+
   List<Expense> findTop5ByUserOrderByCreatedAtDesc(User user);
 
   Optional<Expense> findByUserAndId(User user, Long id);

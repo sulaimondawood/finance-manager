@@ -17,6 +17,8 @@ import com.dawood.finance.entities.User;
 public interface IncomeRepository extends JpaRepository<Income, Long> {
   Page<Income> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
 
+  List<Income> findByUser(User user);
+
   List<Income> findTop5ByUserOrderByCreatedAtDesc(User user);
 
   @Query("SELECT SUM(i.amount) FROM Income i WHERE i.user.id=:userId")
