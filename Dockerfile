@@ -2,7 +2,7 @@ FROM eclipse-temurin:21
 
 WORKDIR /app
 
-COPY /target/finance-manager-0.0.1-SNAPSHOT.jar app.jar
+COPY target/finance-manager-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 9090
 
