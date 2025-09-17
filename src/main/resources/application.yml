@@ -6,10 +6,8 @@ spring:
   config:
     import: file:.env[.properties]
 
-  datasource:
-    url: jdbc:mysql://localhost:3306/financeManager
-    username: root
-    password: admin
+  profiles:
+    active: ${SPRING_ACTIVE_PROFILES}
 
   jpa:
     hibernate:
@@ -32,4 +30,5 @@ jwt:
   secret-key: ${JWT_SECRET}
 
 app:
-  base-url: http://localhost:8080/api/v1/
+  base-url: ${BASE_URL}
+  client-url: ${CLIENT_URL}

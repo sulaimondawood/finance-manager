@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finance Manager</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      th {
+        background: #f4f4f4;
+      }
+      .income {
+        color: green;
+      }
+      .expense {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Daily Summary - Finance Manager</h2>
+    <p>Total Income: <strong th:text="${totalIncome}"></strong></p>
+    <p>Total Expense: <strong th:text="${totalExpense}"></strong></p>
+    <p>Balance: <strong th:text="${totalBalance}"></strong></p>
+
+    <h3 style="font-size: 18px; font-weight: 600">Expenses</h3>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Name</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="t : ${expenses}">
+            <td th:text="${t.category.name}" th:class="${t.category.name}"></td>
+            <td th:text="${t.name}"></td>
+            <td th:text="${t.amount}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 style="font-size: 18px; font-weight: 600">Incomes</h3>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Name</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="t : ${incomes}">
+            <td th:text="${t.category.name}" th:class="${t.category.name}"></td>
+            <td th:text="${t.name}"></td>
+            <td th:text="${t.amount}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,6 +21,20 @@ import com.dawood.finance.exceptions.user.UserNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableExceptionHandler(
+      HttpMessageNotReadableException ex) {
+
+    String readableMessage = "Invalid request body. Please check your JSON format or field values.";
+    ErrorResponse response = ErrorResponse.builder()
+
+        .message(readableMessage)
+        .status(HttpStatus.BAD_REQUEST.value())
+        .build();
+
+    return ResponseEntity.badRequest().body(response);
+  }
 
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedExceptionHandler(
